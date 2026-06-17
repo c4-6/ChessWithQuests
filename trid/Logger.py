@@ -1,4 +1,4 @@
-from tah import Tah
+#export + notation + metadata writer v jedne tride
 
 
 class ExportWriter:
