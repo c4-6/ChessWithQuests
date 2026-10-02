@@ -41,5 +41,20 @@ class HerniPlocha:
         self.herni_deska[start_y][start_x] = None
         return True
 
-    def nahrad_figurku(self, figurka: Figurka, tah: Tah):
-        pass
+    def posun_figurky_virtualne(self, tah: Tah) -> Figurka:
+        # Pro ověření šachu - přesune figurku jen v paměti a vrátí původní
+        start_x, start_y = tah.vychozi_pozice
+        cil_x, cil_y = tah.cilova_pozice
+        puvodni_cil = self.herni_deska[cil_y][cil_x]
+
+        self.herni_deska[cil_y][cil_x] = tah.figurka
+        self.herni_deska[start_y][start_x] = None
+        return puvodni_cil
+
+    def vrat_figurku_virtualne(self, tah: Tah, puvodni_cil: Figurka):
+        # Vrátí virtuální tah zpět
+        start_x, start_y = tah.vychozi_pozice
+        cil_x, cil_y = tah.cilova_pozice
+
+        self.herni_deska[start_y][start_x] = tah.figurka
+        self.herni_deska[cil_y][cil_x] = puvodni_cil

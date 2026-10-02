@@ -8,27 +8,26 @@ class GameView(tk.Frame):
         self.controller = controller
         self.pack(expand=True, fill="both")
 
-        # Černobílá deska
         self.barva_svetla = "#F0F0F0"
         self.barva_tmava = "#666666"
         self.barva_vyber = "#f6f669"
 
-        # Rozvržení do 3 sloupců: Jména, Deska, Časovače
         self.columnconfigure(0, weight=1, minsize=200)
         self.columnconfigure(1, weight=0)
         self.columnconfigure(2, weight=1, minsize=150)
         self.rowconfigure(0, weight=1)
 
-        # --- LEVÝ PANEL (Jména a Questy) ---
+        # --- LEVÝ PANEL (Jména a trvale ukotvený Quest) ---
         self.levy_panel = tk.Frame(self, bg="#222222")
         self.levy_panel.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
 
         self.lbl_hrac2 = tk.Label(self.levy_panel, text="Hráč 2 (Černá)\nVyhozeno: ", fg="white", bg="#222222",
                                   font=("Arial", 12), justify="left")
-        self.lbl_hrac2.pack(anchor="nw")
+        self.lbl_hrac2.pack(anchor="nw", pady=(0, 20))
 
+        # Panel je zde umístěn natrvalo
         self.quest_panel = QuestView(self.levy_panel, controller.zkontroluj_quest)
-        # Quest je zpočátku skrytý
+        self.quest_panel.pack(fill="x", pady=20)
 
         self.lbl_hrac1 = tk.Label(self.levy_panel, text="Hráč 1 (Bílá)\nVyhozeno: ", fg="white", bg="#222222",
                                   font=("Arial", 12), justify="left")
@@ -67,23 +66,21 @@ class GameView(tk.Frame):
 
                 figurka = plocha.vrat_obsah((x, y))
                 if figurka:
-                    # Unicode šachové figurky samy řeší vzhled (prázdné vs. vyplněné), stačí je nakreslit černě.
                     self.platno.create_text(x1 + self.velikost_pole // 2, y1 + self.velikost_pole // 2,
                                             text=figurka.znak, font=("Arial", 40), fill="black")
 
     def aktualizuj_stav(self, cas1, cas2, vyhozene_c, vyhozene_b):
         self.lbl_timer1.config(text=cas1)
         self.lbl_timer2.config(text=cas2)
-        # Hráč 1 vyhazuje černé figury, Hráč 2 bílé figury
         self.lbl_hrac1.config(text=f"Hráč 1 (Bílá)\nVyhozeno: {vyhozene_c}")
         self.lbl_hrac2.config(text=f"Hráč 2 (Černá)\nVyhozeno: {vyhozene_b}")
 
     def ukaz_quest(self, otazka):
         self.quest_panel.zobraz_quest(otazka)
-        self.quest_panel.pack(pady=200, fill="x")
 
     def skryj_quest(self):
-        self.quest_panel.pack_forget()
+        # Místo smazání panelu jen změníme jeho stav na neaktivní
+        self.quest_panel.skryj()
 
     def oznac_pole(self, x: int, y: int):
         self.aktualizuj_plochu()
